@@ -5,7 +5,7 @@
 Contains the scripts that were used to label and generate the data for my convolutional neural network
 
 ## Extra
-Contains additonal code that I wrote to visualise the data and the predictions made by my model. You can check these plots online at http://lukejones.co.uk/chip_plot.html and http://lukejones.co.uk/chip_predictions.html respectively
+Contains additonal code that I wrote to visualise the data and the predictions made by my model. You can check these plots online at [ChIP-seq Data] (http://lukejones.co.uk/chip_plot.html) and [Model Predictions] (http://lukejones.co.uk/chip_predictions.html respectively)
 
 ## Making Predictions
 Here are all the scripts that were used to produce the data that we make the final predictions, as well as the various scripts to make predictions from the saved model. 

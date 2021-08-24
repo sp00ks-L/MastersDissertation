@@ -1,4 +1,4 @@
-# Title      :	Chromo Sampler.py
+# Title      :	chromo_sampler.py
 # Objective  :	Create a script to efficiently sample images around origin regions of the chromosome provided
 # Created by :	Luke
 # Created on :	Thu 01/07/21 09:37

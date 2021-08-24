@@ -1,4 +1,4 @@
-# Title     : Plot the origins for WT and RIF_del
+# Title     : plotting_origins.py
 # Objective : Produce a clear plot showing the positions of the origins
 # Created by: Luke
 # Created on: 28/05/2021 11:52

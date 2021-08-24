@@ -11,20 +11,20 @@ Contains additional code that I wrote to visualise the data and the predictions 
 Here are all the scripts that were used to produce the data that is used to make the final predictions from the saved model as well as creating additonal data specifically to label genomic regions with. The ```load_img_data.py``` file in this directory is based of a file with the same name in the Models directory - it is however tailormade to be used with the prediction data - it does not split into test, train, valiation etc.
 
 ### Models
-This directory contains my Keras models. Both ```third model.py``` and ```final_model.py``` are the same model, ```third model.py``` just contains plotting functionality to assess performance whereas ```final_model.py``` just creates the labels and confidence scores. I have also included an extra file to illustrate how I used hyperband for hypertuning. 
+This directory contains my Keras models. Both ```third_model.py``` and ```final_model.py``` are the same model, ```third_model.py``` just contains plotting functionality to assess performance whereas ```final_model.py``` just creates the labels and confidence scores. I have also included an extra file to illustrate how I used hyperband for hypertuning. 
 
  
 ## Example Use
- 1. Use ```Data Labelling.py``` to label origin regions of interest
- 2. Use ```Chromo sampler.py``` to produce the train, test and validation images for the CNN
+ 1. Use ```data_labelling.py``` to label origin regions of interest
+ 2. Use ```chromo_sampler.py``` to produce the train, test and validation images for the CNN
  3. Use ```final_model.py``` to train on the data and save the trained model to file
- 4. Use ```Images2Predict.py``` to produce the images for the chromosome you're interested in labelling. I primarily used Chromosome I of <i>
+ 4. Use ```predict_img_gen.py``` to produce the images for the chromosome you're interested in labelling. I primarily used Chromosome I of <i>
 Schizosaccharomyces pombe</i>.
  5. Use ```model_multi_predict.py``` to create <i>n</i> predictions. (Currently setting <i>n</i> >= 1 does not provide any advantage)
  6. Either
     - Use ```plot_predictions.py``` to see a simple plot of the results 
    OR
-    - Use ```predictions with origins.py``` for a more advanced webplot using Plotly
+    - Use ```plot_preds_with_origins.py``` for a more advanced webplot using Plotly
  
 
 ## Further Updates

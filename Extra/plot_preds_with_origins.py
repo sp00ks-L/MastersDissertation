@@ -1,4 +1,4 @@
-# Title      :	predictions with origins.py
+# Title      :	plot_preds_with_origins.py
 # Objective  :	Create a Plotly webplot to show my model's predictions alongside information about the DNA origins
 # Created by :	Luke
 # Created on :	Thu 19/08/21 11:59

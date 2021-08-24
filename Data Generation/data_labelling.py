@@ -1,4 +1,4 @@
-# Title     : Data Labelling
+# Title     : data_labelling.py
 # Objective : Derive a way to label regions of the genome as Rif1 binding or non-binding
 # Created by: Luke
 # Created on: 20/06/2021 17:00

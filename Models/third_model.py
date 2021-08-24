@@ -1,4 +1,4 @@
-# Title      :	third model.py
+# Title      :	third_model.py
 # Objective  :	Experiment with other types of conv layers as well as attention
 # Created by :	Luke
 # Created on :	Sun 11/07/21 14:18

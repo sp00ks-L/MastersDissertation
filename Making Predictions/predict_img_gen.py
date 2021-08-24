@@ -1,4 +1,4 @@
-# Title      :	Images2Predict.py
+# Title      :	predict_img_gen.py
 # Objective  :	Create a script that will generate images sequentially along a chromosome (chromosome I) for my model to predict
 # Created by :	Luke
 # Created on :	Sun 11/07/21 16:29

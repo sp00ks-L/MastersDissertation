@@ -47,7 +47,11 @@ def make_dirs(data_dir=data_path):
                 Path.mkdir(model_data_path.joinpath(parent, child), parents=True)
             except FileExistsError:
                 pass
-        
+    try:
+        Path.mkdir(data_dir.joinpath("raw_data"))
+    except FileExistsError:
+        pass
+
     print("Data Folders Created.")
     
 def sample_data():
@@ -77,8 +81,8 @@ def sample_data():
 
 def main():
     make_dirs()
-    label_data()
-    sample_data()
+    # label_data()
+    # sample_data()
 
 if __name__ == "__main__":
     main()

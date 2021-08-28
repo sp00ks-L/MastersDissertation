@@ -28,4 +28,4 @@ Schizosaccharomyces pombe</i>.
  
 
 ## Further Updates
-Despite having completed my dissertation, I will probably update the code slightly to make it a single tool rather than the individual execution of different scripts. The file paths currently are in a format for use on Windows and will need re-doing if a person wanted to use this tool on unix.
+Despite having completed my dissertation, I will probably update the code slightly to make it a single tool rather than the individual execution of different scripts. The file paths currently are in a format for use on Windows and will need re-doing if a person wanted to use this tool on unix. This will all be found in the [CNN Chip-seq](https://github.com/sp00ks-L/MastersDissertation/tree/main/CNN%20ChIP-seq) directory.

@@ -11,9 +11,8 @@ from tensorflow.python.keras.preprocessing.image import img_to_array, load_img
 
 
 def load_data(dir, img_height, img_width):
-    print("Loading Images")
-    num_observations = len(next(walk(dir + '/Binding'))[2])
-    classes = ['/Binding/', '/Non-binding/']
+    num_observations = len(next(walk(dir.joinpath("Binding")))[2])
+    classes = ["Binding", "Non-binding"]
     # Pre-allocate
     x = []
     y = np.zeros((num_observations*2, 1))
@@ -22,13 +21,12 @@ def load_data(dir, img_height, img_width):
     y[:num_observations] = 1
 
     for c in (classes):
-        print(f"Starting {c[1:-1]} imgs")
-        tmp_path = dir + c
+        tmp_path = dir.joinpath(c)
         img_list = next(walk(tmp_path))[2]
 
         # Re-scale img values from 0-255 to 0.0-1.0
         for i in range(num_observations):
-            img = load_img(tmp_path + img_list[i])
+            img = load_img(tmp_path.joinpath(img_list[i]))
             img = img.resize((img_height, img_width))
             img_arr = img_to_array(img)
             img_arr /= 255.0
@@ -41,5 +39,5 @@ def load_data(dir, img_height, img_width):
     x = x[rnd_indices]
     y = y[rnd_indices]
 
-    print(f"Loaded {2*num_observations} images")
+    print(f"\nLoaded {2*num_observations} images from {dir}")
     return x, y

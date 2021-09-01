@@ -4,9 +4,7 @@
 # Created by :	Luke
 # Created on :	Tue 13/07/21 09:47
 
-from load_img_data import load_data
-import sys
-from datetime import datetime
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,64 +16,40 @@ from keras.layers.core import Dense, Flatten
 from keras.layers.normalization import BatchNormalization
 from keras.losses import BinaryCrossentropy
 from keras.optimizers import Adam
-import visualkeras
-from PIL import ImageFont
-from sklearn.metrics import (auc, average_precision_score, f1_score,
-                             precision_recall_curve, roc_curve)
+from sklearn.metrics import precision_recall_curve
 from sklearn.model_selection import train_test_split
 
-# sys.path.insert(
-#     0, r'/Sussex Python/Dissertation/Modelling/Models/load_img_data.py')
-
-from models.load_img_data import load_data
+from .load_img_data import load_data
 
 plt.style.use('ggplot')
 
 img_height = img_width = 128
 batch_size = 32
 
-# Data Directories
-# train_dir = 'E:/CNN Data Small Sample/Train'
-# test_dir = 'E:/CNN Data Small Sample/Test'
-# validate_dir = 'E:/CNN Data Small Sample/Validate'
 
-train_dir = 'E:/CNN Combined Sample 2/Train'
-test_dir = 'E:/CNN Combined Sample 2/Test'
-validate_dir = 'E:/CNN Combined Sample 2/Validate'
+def load_and_split(train_dir, test_dir, validate_dir):
+    train_x, train_y = load_data(train_dir, img_height, img_width)
+    test_x, test_y = load_data(test_dir, img_height, img_width)
+    val_x, val_y = load_data(validate_dir, img_height, img_width)
 
-# Load the data
-train_x, train_y = load_data(train_dir, img_height, img_width)
-test_x, test_y = load_data(test_dir, img_height, img_width)
-val_x, val_y = load_data(validate_dir, img_height, img_width)
+    # Concat Data and split
+    data_x = np.concatenate((train_x, val_x, test_x))
+    data_y = np.concatenate((train_y, val_y, test_y))
 
-# If you do not want to combine chromosomal data, then comment out from here
-# Concat Data and split
-data_x = np.concatenate((train_x, val_x, test_x))
-data_y = np.concatenate((train_y, val_y, test_y))
+    train_ratio = 0.7
+    validation_ratio = 0.15
+    test_ratio = 0.15
+    # just incase you got the ratios wrong will throw an error
+    assert train_ratio + validation_ratio + test_ratio == 1
 
-train_ratio = 0.7
-validation_ratio = 0.15
-test_ratio = 0.15
-# just incase you got the ratios wrong will throw an error
-assert train_ratio + validation_ratio + test_ratio == 1
+    train_x, test_x, train_y, test_y = train_test_split(
+        data_x, data_y, test_size=1 - train_ratio)
 
-train_x, test_x, train_y, test_y = train_test_split(
-    data_x, data_y, test_size=1 - train_ratio)
+    val_x, test_x, val_y, test_y = train_test_split(
+        test_x, test_y, test_size=test_ratio/(test_ratio + validation_ratio))
 
-val_x, test_x, val_y, test_y = train_test_split(
-    test_x, test_y, test_size=test_ratio/(test_ratio + validation_ratio))
-# to here ---------------------------------------------------------------
+    return train_x, train_y, test_x, test_y, val_x, val_y
 
-
-# Callbacks
-early_stop = EarlyStopping(
-    monitor='val_loss', patience=5, restore_best_weights=True)
-
-
-save_model_dir = r'E:\CNN Models\weights.best.hdf5'
-# I saved the whole model, not just weights so that the architecture did not have to be re-specified in the prediction scipts
-checkpoint = ModelCheckpoint(save_model_dir, monitor='val_precision',
-                             save_best_only=True, mode='max', save_weights_only=False)
 
 # Metrics
 rec = tf.keras.metrics.Recall(name='recall')
@@ -89,7 +63,6 @@ loss = BinaryCrossentropy(from_logits=True)
 optimizer = Adam(learning_rate=0.001)
 
 
-# Define Model
 def create_model():
     # Filter sizes for each layer derived using Hyperband
     model = Sequential([
@@ -115,37 +88,34 @@ def create_model():
     return model
 
 
-model = create_model()
+def train_and_save(model, train_x, train_y, val_x, val_y):
+    model_path = Path(__file__).parent.absolute()
+    # Callbacks
+    early_stop = EarlyStopping(
+        monitor='val_loss', patience=5, restore_best_weights=True)
 
-model.fit(
-    train_x,
-    train_y,
-    validation_data=(val_x, val_y),
-    # Over estimate epochs thanks to earlystopping
-    epochs=100,
-    batch_size=batch_size,
-    callbacks=[early_stop, checkpoint]
-)
+    # I saved the whole model, not just weights so that the architecture did not have to be re-specified in the prediction scipts
+    save_model_dir = model_path.joinpath("weights.best.hdf5")
+    checkpoint = ModelCheckpoint(save_model_dir, monitor='val_precision',
+                                 save_best_only=True, mode='max', save_weights_only=False)
 
-# Visual keras only needed to plot the model architecture
-# from collections import defaultdict
+    model.fit(
+        train_x,
+        train_y,
+        validation_data=(val_x, val_y),
+        # Over estimate epochs thanks to earlystopping
+        epochs=100,
+        batch_size=batch_size,
+        callbacks=[early_stop, checkpoint]
+    )
 
-# color_map = defaultdict(dict)
-# color_map[Conv2D]['fill'] = '#ffd166'
-# color_map[MaxPooling2D]['fill'] = '#ef476f'
-# color_map[Dense]['fill'] = '#118ab2'
-# color_map[Flatten]['fill'] = '#06d6a0'
-# color_map[BatchNormalization]['fill'] = '#9b70e2'
-
-# font = ImageFont.truetype("arial.ttf", 32)  # using comic sans is strictly prohibited!
-# visualkeras.layered_view(model, legend=True, font=font, to_file=r'C:\Users\Luke\Desktop\Thesis Figures\final_model.png', scale_xy=1, scale_z=1, color_map=color_map) # font is optional
-
-# Finding best threshold that maximises f1 score
-y_pred_keras = model.predict(test_x).ravel()
-precision, recall, thresholds = precision_recall_curve(test_y, y_pred_keras)
-fscore = (2 * precision * recall) / (precision + recall)
-ix = np.argmax(fscore)
-best_threshold = thresholds[ix]
-# Write the best threshold to file for reading in at prediction time
-with open(r"E:\CNN Models\best_threshold.txt", "w+") as f:
-    f.write(str(best_threshold))
+    # Finding best threshold that maximises f1 score
+    y_pred_keras = model.predict(val_x).ravel()
+    precision, recall, thresholds = precision_recall_curve(val_y, y_pred_keras)
+    fscore = (2 * precision * recall) / (precision + recall)
+    ix = np.argmax(fscore)
+    best_threshold = thresholds[ix]
+    # Write the best threshold to file for reading in at prediction time
+    threshold_path = model_path.joinpath("best_threshold.txt")
+    with open(threshold_path, "w+") as f:
+        f.write(str(best_threshold))

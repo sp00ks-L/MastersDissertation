@@ -19,7 +19,7 @@ from keras.optimizers import Adam
 from sklearn.metrics import precision_recall_curve
 from sklearn.model_selection import train_test_split
 
-from .load_img_data import load_data
+from models.load_img_data import load_data
 
 plt.style.use('ggplot')
 
